@@ -26,21 +26,25 @@ Prerequisites
     Git
 
 Clone the Repository
-bash
+
+    bash
     git clone https://github.com/ElderHorror/Interactive-Dashboard.git
 
 Install Dependencies
-bash
+
+    bash
     npm install
     Run Locally
 
 Frontend:
+
     bash
     npm run dev
         Runs at http://localhost:5173.
 
 Backend:
-bash
+
+    bash
     npm run server
         Runs at http://localhost:3001.
 
@@ -76,27 +80,6 @@ Usage
     Enter a stock symbol (e.g., TSLA).
     Select a range (Today, 7 Days, etc.).
     Toggle dark/light mode.
-
-Project Structure
-
-├── public/
-│   └── my-favicon.ico        # Custom favicon
-├── src/
-│   ├── components/
-│   │   ├── ChartDisplay.jsx  # Chart logic
-│   │   └── Dashboard.jsx     # Dashboard component
-│   ├── App.jsx               # Main app
-│   ├── index.css             # Tailwind styles
-│   └── main.jsx              # React root
-├── index.html                # HTML with title/favicon
-├── server.js                 # Backend proxy
-├── package.json              # Scripts/dependencies
-├── package-lock.json         # Lockfile for dependencies
-├── eslint.config.js          # ESLint config
-├── vite.config.js            # Vite config
-├── postcss.config.js         # PostCSS config
-├── tailwind.config.js        # Tailwind config
-└── README.md                 # This file
 
 Troubleshooting
 
