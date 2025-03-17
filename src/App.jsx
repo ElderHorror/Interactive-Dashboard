@@ -27,17 +27,23 @@ function App() {
           : 'bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500'
       }`}
     >
+      
       <div className="w-full max-w-4xl bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl p-4 sm:p-8 border border-white/20 relative">
+      
         <button
           onClick={() => setDarkMode(!darkMode)}
           className="absolute top-2 right-2 sm:top-4 sm:right-4 px-2 py-1 sm:px-3 sm:py-1 bg-white/20 text-white rounded-lg hover:bg-white/30 transition duration-300 text-sm sm:text-base"
         >
+          
           {darkMode ? 'Light' : 'Dark'}
         </button>
+        
         <h1 className="text-2xl sm:text-4xl font-extrabold text-center text-white mb-6 sm:mb-8 tracking-wide drop-shadow-md">
           Stock Dashboard
         </h1>
+        
         <div className="flex flex-col sm:flex-row max-w-lg mx-auto gap-3">
+          
           <input
             type="text"
             value={symbol}
@@ -72,6 +78,7 @@ function App() {
           ))}
         </div>
         <Dashboard symbol={symbol} darkMode={darkMode} range={range} />
+        <a href="https://github.com/ElderHorror/Interactive-Dashboard" className='text-sm text-white/80 hover:text-white'>View Source</a>
       </div>
     </div>
   );
