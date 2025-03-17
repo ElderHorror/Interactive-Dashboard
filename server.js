@@ -4,9 +4,10 @@ import cors from 'cors';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || 'http://localhost:5173'; // Fallback for local dev
 
 app.use(express.json());
-app.use(cors({ origin: 'https://interactive-dashboard-ivory.vercel.app/' })); // Allow all for testing, refine later
+app.use(cors({ origin: ALLOWED_ORIGIN }));
 
 app.get('/api/stock/:symbol', async (req, res) => {
   const { symbol } = req.params;
@@ -29,20 +30,11 @@ app.get('/api/stock/:symbol', async (req, res) => {
       const today = new Date();
       const startDate = new Date(today);
       switch (range) {
-        case '7d':
-          startDate.setDate(today.getDate() - 7);
-          break;
-        case '1m':
-          startDate.setMonth(today.getMonth() - 1);
-          break;
-        case '4m':
-          startDate.setMonth(today.getMonth() - 4);
-          break;
-        case '1y':
-          startDate.setFullYear(today.getFullYear() - 1);
-          break;
-        default:
-          startDate.setDate(today.getDate() - 7);
+        case '7d': startDate.setDate(today.getDate() - 7); break;
+        case '1m': startDate.setMonth(today.getMonth() - 1); break;
+        case '4m': startDate.setMonth(today.getMonth() - 4); break;
+        case '1y': startDate.setFullYear(today.getFullYear() - 1); break;
+        default: startDate.setDate(today.getDate() - 7);
       }
 
       const chart = await yahooFinance.chart(symbol, {
