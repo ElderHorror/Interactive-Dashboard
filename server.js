@@ -4,10 +4,19 @@ import cors from 'cors';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || 'http://localhost:5173'; // Fallback for local dev
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || 'http://localhost:5173';
 
 app.use(express.json());
-app.use(cors({ origin: ALLOWED_ORIGIN }));
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || origin === ALLOWED_ORIGIN) {
+      callback(null, true);
+    } else {
+      console.error(`CORS blocked: ${origin} not allowed. Expected: ${ALLOWED_ORIGIN}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+}));
 
 app.get('/api/stock/:symbol', async (req, res) => {
   const { symbol } = req.params;
