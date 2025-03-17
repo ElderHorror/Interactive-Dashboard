@@ -6,7 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: '*' })); // Allow all for testing, refine later
 
 app.get('/api/stock/:symbol', async (req, res) => {
   const { symbol } = req.params;

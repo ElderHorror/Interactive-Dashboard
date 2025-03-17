@@ -39,34 +39,34 @@ function ChartDisplay({ dashData, darkMode, range }) {
     plugins: {
       legend: {
         position: 'top',
-        labels: { font: { size: 14, weight: 'bold' }, color: darkMode ? '#D1D5DB' : '#fff' },
+        labels: { font: { size: 12, weight: 'bold' }, color: darkMode ? '#D1D5DB' : '#fff' },
       },
       title: {
         display: true,
         text: `${dashData.symbol} - ${rangeLabels[range]}`,
-        font: { size: 20, weight: 'bold' },
+        font: { size: 16, weight: 'bold' }, // Smaller on mobile
         color: darkMode ? '#D1D5DB' : '#fff',
         padding: { top: 10, bottom: 20 },
       },
-      tooltip: { backgroundColor: darkMode ? '#374151' : '#1F2937', titleFont: { size: 14 }, bodyFont: { size: 12 } },
+      tooltip: { backgroundColor: darkMode ? '#374151' : '#1F2937', titleFont: { size: 12 }, bodyFont: { size: 10 } },
     },
     scales: {
       y: {
         beginAtZero: false,
         grid: { color: darkMode ? 'rgba(209, 213, 219, 0.1)' : 'rgba(255, 255, 255, 0.1)' },
-        ticks: { color: darkMode ? '#D1D5DB' : '#fff', font: { size: 12 } },
-        title: { display: true, text: 'Price ($)', color: darkMode ? '#D1D5DB' : '#fff' },
+        ticks: { color: darkMode ? '#D1D5DB' : '#fff', font: { size: 10 } },
+        title: { display: true, text: 'Price ($)', color: darkMode ? '#D1D5DB' : '#fff', font: { size: 12 } },
       },
       yVolume: {
         beginAtZero: true,
         position: 'right',
         grid: { display: false },
-        ticks: { color: darkMode ? '#D1D5DB' : '#fff', font: { size: 12 } },
-        title: { display: true, text: 'Volume', color: darkMode ? '#D1D5DB' : '#fff' },
+        ticks: { color: darkMode ? '#D1D5DB' : '#fff', font: { size: 10 } },
+        title: { display: true, text: 'Volume', color: darkMode ? '#D1D5DB' : '#fff', font: { size: 12 } },
       },
       x: {
         grid: { display: false },
-        ticks: { color: darkMode ? '#D1D5DB' : '#fff', font: { size: 12 } },
+        ticks: { color: darkMode ? '#D1D5DB' : '#fff', font: { size: 10 } },
       },
     },
   };
@@ -74,7 +74,7 @@ function ChartDisplay({ dashData, darkMode, range }) {
   let ChartComponent, chartData, chartOptions;
 
   switch (range) {
-    case '1d': // Bar Chart for Today with OHLC and Volume
+    case '1d':
       ChartComponent = Bar;
       chartData = {
         labels: ['Open', 'High', 'Low', 'Close'],
@@ -88,19 +88,19 @@ function ChartDisplay({ dashData, darkMode, range }) {
               dashData.trend[0].close,
             ],
             backgroundColor: [
-              darkMode ? '#34D399' : '#10B981', // Green for Open
-              darkMode ? '#60A5FA' : '#A78BFA', // Blue for High
-              darkMode ? '#F87171' : '#EF4444', // Red for Low
-              darkMode ? '#D1D5DB' : '#fff',    // Gray/White for Close
+              darkMode ? '#34D399' : '#10B981',
+              darkMode ? '#60A5FA' : '#A78BFA',
+              darkMode ? '#F87171' : '#EF4444',
+              darkMode ? '#D1D5DB' : '#fff',
             ],
             borderColor: darkMode ? '#2563EB' : '#7C3AED',
             borderWidth: 1,
-            barPercentage: 0.5, // Thinner bars
+            barPercentage: 0.5,
             yAxisID: 'y',
           },
           {
             label: 'Volume',
-            data: [dashData.trend[0].volume, null, null, null], // Volume only for "Open" slot
+            data: [dashData.trend[0].volume, null, null, null],
             backgroundColor: darkMode ? 'rgba(96, 165, 250, 0.5)' : 'rgba(167, 139, 250, 0.5)',
             borderColor: darkMode ? '#60A5FA' : '#A78BFA',
             borderWidth: 1,
@@ -113,13 +113,13 @@ function ChartDisplay({ dashData, darkMode, range }) {
         ...baseOptions,
         scales: {
           ...baseOptions.scales,
-          x: { ticks: { font: { size: 14 } } },
+          x: { ticks: { font: { size: 12 } } },
         },
       };
       break;
 
-    case '7d': // Line Chart for 7 Days with Volume
-    case '1m': // Line Chart for 1 Month with Volume
+    case '7d':
+    case '1m':
       ChartComponent = Line;
       chartData = {
         labels: dashData.trend.map((t) => t.date.slice(-5)),
@@ -130,7 +130,7 @@ function ChartDisplay({ dashData, darkMode, range }) {
             borderColor: darkMode ? '#60A5FA' : '#A78BFA',
             backgroundColor: (context) => {
               const ctx = context.chart.ctx;
-              const gradient = ctx.createLinearGradient(0, 0, 0, 500);
+              const gradient = ctx.createLinearGradient(0, 0, 0, range === '7d' ? 300 : 400);
               gradient.addColorStop(0, darkMode ? 'rgba(96, 165, 250, 0.4)' : 'rgba(167, 139, 250, 0.4)');
               gradient.addColorStop(1, darkMode ? 'rgba(96, 165, 250, 0)' : 'rgba(167, 139, 250, 0)');
               return gradient;
@@ -139,8 +139,8 @@ function ChartDisplay({ dashData, darkMode, range }) {
             tension: 0.4,
             pointBackgroundColor: '#fff',
             pointBorderColor: darkMode ? '#60A5FA' : '#A78BFA',
-            pointHoverRadius: 8,
-            pointRadius: 5,
+            pointHoverRadius: 6,
+            pointRadius: 4,
             yAxisID: 'y',
           },
           {
@@ -158,7 +158,7 @@ function ChartDisplay({ dashData, darkMode, range }) {
       chartOptions = baseOptions;
       break;
 
-    case '4m': // Area Chart for 4 Months with Volume
+    case '4m':
       ChartComponent = Line;
       chartData = {
         labels: dashData.trend.map((t) => t.date.slice(-5)),
@@ -169,7 +169,7 @@ function ChartDisplay({ dashData, darkMode, range }) {
             borderColor: darkMode ? '#60A5FA' : '#A78BFA',
             backgroundColor: (context) => {
               const ctx = context.chart.ctx;
-              const gradient = ctx.createLinearGradient(0, 0, 0, 500);
+              const gradient = ctx.createLinearGradient(0, 0, 0, 450);
               gradient.addColorStop(0, darkMode ? 'rgba(96, 165, 250, 0.6)' : 'rgba(167, 139, 250, 0.6)');
               gradient.addColorStop(1, darkMode ? 'rgba(96, 165, 250, 0)' : 'rgba(167, 139, 250, 0)');
               return gradient;
@@ -193,7 +193,7 @@ function ChartDisplay({ dashData, darkMode, range }) {
       chartOptions = baseOptions;
       break;
 
-    case '1y': // Line Chart for 1 Year with Volume
+    case '1y':
       ChartComponent = Line;
       chartData = {
         labels: dashData.trend.map((t) => t.date.slice(-5)),
@@ -213,7 +213,7 @@ function ChartDisplay({ dashData, darkMode, range }) {
             tension: 0.4,
             pointBackgroundColor: '#fff',
             pointBorderColor: darkMode ? '#60A5FA' : '#A78BFA',
-            pointHoverRadius: 8,
+            pointHoverRadius: 6,
             pointRadius: 3,
             yAxisID: 'y',
           },
@@ -240,9 +240,9 @@ function ChartDisplay({ dashData, darkMode, range }) {
 
   return (
     <div
-      className={`mt-8 ${
+      className={`mt-6 sm:mt-8 ${
         darkMode ? 'bg-gray-800/20' : 'bg-white/10'
-      } backdrop-blur-md p-6 rounded-xl shadow-lg h-[500px] w-full max-w-4xl mx-auto`}
+      } backdrop-blur-md p-4 sm:p-6 rounded-xl shadow-lg w-full h-[300px] sm:h-[400px] md:h-[500px]`}
     >
       <ChartComponent data={chartData} options={chartOptions} />
     </div>
