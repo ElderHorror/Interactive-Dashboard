@@ -1,6 +1,6 @@
 StockPulse - Interactive Stock Dashboard
 
-StockPulse is a personal interactive web app for tracking stock market data. Built with React and Vite, it fetches stock info via a Node.js proxy and displays it with Chart.js-powered visualizations. Features include a mobile-responsive design, dark/light mode, and custom charts for today’s prices and historical trends.
+StockPulse is a personal interactive web app for tracking stock market data. Built with React and Vite, it fetches stock info via a Node.js proxy and displays it with Chart.js-powered visualizations. Check it live: [https://interactive-dashboard-ivory.vercel.app/](https://interactive-dashboard-ivory.vercel.app/).
 Features
 
     Real-Time Stock Data: View open, high, low, close, and volume for any stock symbol (e.g., AAPL).
@@ -34,7 +34,8 @@ Install Dependencies
 
     bash
     npm install
-    Run Locally
+
+Run Locally
 
 Frontend:
 
@@ -89,10 +90,8 @@ Troubleshooting
     Backend Issues:
         Test <your-render-url>/api/stock/AAPL—expect JSON.
 
-Notes
+About Me
 
-This is a personal project. The backend URL is not shared publicly to avoid misuse. To use this app, deploy your own instance.
+I’m Adedeji, a web developer seeking job opportunities or freelance contracts. Built this to flex my React and API skills. Hit me up on X: @AdedejiAde50479!
 
-License
-
-For personal use only.
+Note: This is a personal project. The backend URL is not shared publicly to avoid misuse. To use this app, deploy your own instance.
