@@ -78,6 +78,19 @@ app.get('/api/stock/:symbol', async (req, res) => {
   }
 });
 
+// Self-ping to keep Render awake
+const keepAlive = () => {
+  setInterval(async () => {
+    try {
+      const response = await fetch(`http://localhost:${PORT}/api/stock/AAPL`);
+      console.log(`Self-ping at ${new Date().toISOString()}: ${response.status}`);
+    } catch (error) {
+      console.error(`Self-ping error: ${error.message}`);
+    }
+  }, 10 * 60 * 1000); // Every 10 minutes
+};
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  keepAlive(); // Start self-pinging
 });
