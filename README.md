@@ -92,6 +92,6 @@ Troubleshooting
 
 About Me
 
-I’m Adedeji, a web developer seeking job opportunities or freelance contracts. Built this to flex my React and API skills. Hit me up on X: @AdedejiAde50479!
+I’m Adedeji, a web developer seeking job opportunities or freelance contracts. Built this to flex my React and API skills. Hit me up on X: [@AdedejiAde50479](https://x.com/AdedejiAde50479)!
 
 Note: This is a personal project. The backend URL is not shared publicly to avoid misuse. To use this app, deploy your own instance.
