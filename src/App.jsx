@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'; // Add useEffect
+import { Analytics } from "@vercel/analytics/react"
 import Dashboard from './components/Dashboard.jsx';
 import './index.css';
 
