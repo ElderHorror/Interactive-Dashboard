@@ -5,6 +5,7 @@ import cors from 'cors';
 const app = express();
 const PORT = process.env.PORT || 3001;
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || 'http://localhost:5173';
+const RENDER_URL = process.env.RENDER_URL || `http://localhost:${PORT}`; // Add your Render URL in env
 
 app.use(express.json());
 app.use(cors({
@@ -78,19 +79,22 @@ app.get('/api/stock/:symbol', async (req, res) => {
   }
 });
 
-// Self-ping to keep Render awake
-const keepAlive = () => {
+app.get('/ping', (req, res) => res.send('OK')); // Simple keep-alive endpoint
+
+const keepAlive = async () => {
+  const interval = 10 * 60 * 1000; // 10 minutes
+  const pingUrl = `${RENDER_URL}/ping`;
   setInterval(async () => {
     try {
-      const response = await fetch(`http://localhost:${PORT}/api/stock/AAPL`);
-      console.log(`Self-ping at ${new Date().toISOString()}: ${response.status}`);
+      const response = await fetch(pingUrl);
+      console.log(`Keep-alive ping at ${new Date().toISOString()}: ${response.status}`);
     } catch (error) {
-      console.error(`Self-ping error: ${error.message}`);
+      console.error(`Keep-alive error: ${error.message}`);
     }
-  }, 10 * 60 * 1000); // Every 10 minutes
+  }, interval);
 };
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  keepAlive(); // Start self-pinging
+  keepAlive();
 });
