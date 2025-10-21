@@ -24,13 +24,12 @@ const POPULAR_STOCKS = [
   { symbol: 'IBM', name: 'IBM Corporation' },
 ];
 
-function StockSearch({ value, onChange, placeholder, darkMode, onClear, autoFocus = false }) {
+function StockSearch({ value, onChange, placeholder, darkMode, autoFocus = false }) {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filteredStocks, setFilteredStocks] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const inputRef = useRef(null);
   const suggestionsRef = useRef(null);
-
   useEffect(() => {
     if (value) {
       const filtered = POPULAR_STOCKS.filter(

@@ -1,12 +1,13 @@
 import express from 'express';
 import yahooFinance from 'yahoo-finance2';
 import cors from 'cors';
+import NewsAPI from 'newsapi';
+const newsapi = new NewsAPI('59aff0abb9e74943821ca02f927daad1');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || 'http://localhost:5173';
 const RENDER_URL = process.env.RENDER_URL || `http://localhost:${PORT}`; // Add your Render URL in env
-
 app.use(express.json());
 app.use(cors({
   origin: (origin, callback) => {
@@ -18,6 +19,33 @@ app.use(cors({
     }
   },
 }));
+
+// News endpoint
+app.get('/api/news/:symbol', async (req, res) => {
+  try {
+    const { symbol } = req.params;
+    
+    const response = await newsapi.v2.everything({
+      q: symbol,
+      language: 'en',
+      sortBy: 'publishedAt',
+      pageSize: 5,
+    });
+
+    const formattedNews = response.articles.map(article => ({
+      title: article.title,
+      source: article.source.name,
+      publishedAt: article.publishedAt,
+      url: article.url,
+      description: article.description,
+    }));
+
+    res.json(formattedNews);
+  } catch (error) {
+    console.error('Error fetching news:', error);
+    res.status(500).json({ error: 'Failed to fetch news' });
+  }
+});
 
 app.get('/api/stock/:symbol', async (req, res) => {
   const { symbol } = req.params;

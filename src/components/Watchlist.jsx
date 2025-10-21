@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-function Watchlist({ darkMode, onSelectSymbol, currentSymbol, isComparing }) {
+function Watchlist({ darkMode, onSelectSymbol, isComparing }) {
   const [watchlist, setWatchlist] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
 

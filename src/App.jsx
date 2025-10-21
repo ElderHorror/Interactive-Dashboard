@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { Analytics } from "@vercel/analytics/react"
-import { TrendingUp, BarChart3, Sparkles } from 'lucide-react';
+import { TrendingUp, BarChart3, Sparkles, Filter } from 'lucide-react';
 import './index.css';
 import StockSearch from './components/StockSearch';
 import SkeletonLoader from './components/SkeletonLoader';
@@ -12,6 +12,8 @@ const Dashboard = lazy(() => import('./components/Dashboard.jsx'));
 const ChartDisplay = lazy(() => import('./components/ChartDisplay.jsx'));
 const Watchlist = lazy(() => import('./components/Watchlist'));
 const KeyboardShortcutsModal = lazy(() => import('./components/KeyboardShortcutsModal'));
+const StockScreener = lazy(() => import('./components/StockScreener'));
+const NewsFeed = lazy(() => import('./components/NewsFeed'));
 
 function App() {
   const [symbol, setSymbol] = useState('');
@@ -21,6 +23,7 @@ function App() {
   const [colorTheme, setColorTheme] = useState('neutral'); // neutral, warm, vibrant
   const [range, setRange] = useState('7d');
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const [showScreener, setShowScreener] = useState(false);
   const searchInputRef = useRef(null);
   const compareInputRef = useRef(null);
 
@@ -144,7 +147,7 @@ function App() {
           </p>
         </div>
 
-        {/* Main Card */}
+        {/* Main Card */
         <div className={`rounded-3xl shadow-2xl p-4 sm:p-8 border relative animate-fade-in-up ${
           darkMode 
             ? 'bg-primary-800/40 backdrop-blur-xl border-primary-700/50' 
@@ -182,7 +185,6 @@ function App() {
               <Watchlist 
                 darkMode={darkMode} 
                 onSelectSymbol={handleSymbolSelect} 
-                currentSymbol={symbol}
                 isComparing={showCompare}
               />
             </Suspense>
@@ -221,10 +223,20 @@ function App() {
           </div>
           <div className="flex gap-2">
             <button
+              onClick={() => setShowScreener(true)}
+              className={`px-3 sm:px-4 py-3 font-medium rounded-xl smooth-transition text-sm sm:text-base shadow-lg border flex items-center gap-2 ${
+                darkMode ? 'bg-primary-700/50 border-primary-600 text-primary-200 hover:bg-primary-600/50' : 'bg-white border-primary-300 text-primary-800 hover:bg-primary-50'
+              }`}
+              title="Stock Screener"
+            >
+              <Filter className="w-4 h-4" />
+              <span className="hidden sm:inline">Screener</span>
+            </button>
+            <button
               onClick={() => setShowCompare(!showCompare)}
               className={`px-4 py-3 font-medium rounded-xl smooth-transition text-sm sm:text-base shadow-lg ${
                 showCompare 
-                  ? `bg-gradient-to-r ${colorTheme === 'neutral' ? 'from-accent-500 to-accent-700' : colorTheme === 'warm' ? 'from-warm-600 to-warm-800' : 'from-purple-500 to-pink-500'} text-white hover:shadow-xl` 
+                  ? (colorTheme === 'neutral' ? 'bg-gradient-to-r from-accent-500 to-accent-700' : colorTheme === 'warm' ? 'bg-gradient-to-r from-warm-600 to-warm-800' : 'bg-gradient-to-r from-purple-500 to-pink-500') + ' text-white hover:shadow-xl'
                   : darkMode ? 'bg-primary-700/50 border border-primary-600 text-primary-200 hover:bg-primary-600/50' : 'bg-white border border-primary-300 text-primary-800 hover:bg-primary-50'
               }`}
             >
@@ -256,7 +268,7 @@ function App() {
               onClick={() => setRange(r.value)}
               className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium smooth-transition border ${
                 range === r.value
-                  ? `${colorTheme === 'neutral' ? 'bg-accent-500 border-accent-600' : colorTheme === 'warm' ? 'bg-warm-600 border-warm-700' : 'bg-purple-500 border-purple-600'} text-white shadow-lg scale-105`
+                  ? (colorTheme === 'neutral' ? 'bg-accent-500 border-accent-600' : colorTheme === 'warm' ? 'bg-warm-600 border-warm-700' : 'bg-purple-500 border-purple-600') + ' text-white shadow-lg scale-105'
                   : darkMode ? 'bg-primary-700/50 border-primary-600 text-primary-300 hover:bg-primary-600/50' : 'bg-white border-primary-300 text-primary-700 hover:bg-primary-50'
               }`}
               style={{ animationDelay: `${index * 0.05}s` }}
@@ -270,9 +282,9 @@ function App() {
           {symbol && (
             <Suspense fallback={<SkeletonLoader darkMode={darkMode} type="dashboard" />}>
               <div className="space-y-4">
-                <div className={`${showCompare ? 'grid grid-cols-1 lg:grid-cols-2 gap-4' : ''}`}>
-                  <Dashboard symbol={symbol} darkMode={darkMode} range={range} onSelectSymbol={handleSymbolSelect} />
-                  {showCompare && compareSymbol && <Dashboard symbol={compareSymbol} darkMode={darkMode} range={range} onSelectSymbol={handleSymbolSelect} />}
+                <div className={showCompare ? 'grid grid-cols-1 lg:grid-cols-2 gap-4' : ''}>
+                  <Dashboard symbol={symbol} darkMode={darkMode} range={range} />
+                  {showCompare && compareSymbol && <Dashboard symbol={compareSymbol} darkMode={darkMode} range={range} />}
                 </div>
                 <div className="w-full">
                   <ChartDisplay 
@@ -281,6 +293,9 @@ function App() {
                     darkMode={darkMode} 
                     range={range} 
                   />
+                </div>
+                <div className="w-full">
+                  <NewsFeed symbol={symbol} darkMode={darkMode} />
                 </div>
               </div>
             </Suspense>
@@ -314,7 +329,8 @@ function App() {
             Keyboard Shortcuts (?)
           </button>
         </div>
-      </div>
+        </div>
+        }
       </div>
 
       <Suspense fallback={null}>
@@ -324,7 +340,19 @@ function App() {
           darkMode={darkMode}
         />
       </Suspense>
+
+      {showScreener && (
+        <Suspense fallback={null}>
+          <StockScreener
+            darkMode={darkMode}
+            onSelectStock={setSymbol}
+            onClose={() => setShowScreener(false)}
+          />
+        </Suspense>
+      )}
+
       <Analytics />
+      
     </div>
   );
 }

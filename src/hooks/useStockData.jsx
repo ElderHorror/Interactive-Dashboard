@@ -33,6 +33,7 @@ export function useStockData(symbol, range = '7d', enabled = true) {
       setData(response.data);
       setError(null);
       setRetryCount(0);
+      setLoading(false);
     } catch (err) {
       if (err.name !== 'CanceledError') {
         console.error('Error fetching stock data:', err);
@@ -42,9 +43,6 @@ export function useStockData(symbol, range = '7d', enabled = true) {
           canRetry: err.response?.status !== 404,
         });
         setData(null);
-      }
-    } finally {
-      if (err?.name !== 'CanceledError') {
         setLoading(false);
       }
     }
