@@ -42,24 +42,20 @@ function NewsFeed({ symbol, darkMode }) {
   };
 
   return (
-    <div className={`w-full mt-4 p-4 sm:p-6 rounded-2xl border shadow-xl ${
-      darkMode ? 'bg-primary-800/40 backdrop-blur-xl border-primary-700/50' : 'bg-white/90 backdrop-blur-xl border-primary-200'
-    }`}>
-      <div className="flex items-center gap-3 mb-4">
-        <Newspaper className={`w-5 h-5 ${darkMode ? 'text-accent-400' : 'text-accent-600'}`} />
-        <h3 className={`text-base sm:text-lg font-bold ${darkMode ? 'text-white' : 'text-primary-900'}`}>
-          Latest News {symbol && `for ${symbol}`}
+    <div className="card-elevated p-6 w-full">
+      <div className="flex items-center gap-3 mb-6">
+        <Newspaper className="w-5 h-5 text-accent-primary" />
+        <h3 className="text-lg font-semibold text-text-primary">
+          Latest News {symbol && `· ${symbol}`}
         </h3>
       </div>
 
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className={`p-4 rounded-xl border animate-pulse ${
-              darkMode ? 'bg-primary-700/30 border-primary-600' : 'bg-gray-100 border-primary-200'
-            }`}>
-              <div className={`h-4 rounded mb-2 ${darkMode ? 'bg-primary-600' : 'bg-gray-300'}`} style={{ width: '80%' }} />
-              <div className={`h-3 rounded ${darkMode ? 'bg-primary-600' : 'bg-gray-300'}`} style={{ width: '40%' }} />
+            <div key={i} className="p-4 rounded-lg border border-border bg-background-surface animate-pulse">
+              <div className="h-4 rounded mb-2 bg-background-hover" style={{ width: '80%' }} />
+              <div className="h-3 rounded bg-background-hover" style={{ width: '40%' }} />
             </div>
           ))}
         </div>
@@ -67,31 +63,33 @@ function NewsFeed({ symbol, darkMode }) {
         <div className="space-y-3">
           {news.map((item, index) => (
             <a key={index} href={item.url} target="_blank" rel="noopener noreferrer"
-              className={`block p-4 rounded-xl border smooth-transition animate-fade-in ${
-                darkMode ? 'bg-primary-700/30 border-primary-600 hover:bg-primary-600/50' : 'bg-white border-primary-200 hover:bg-accent-50'
-              }`} style={{ animationDelay: `${index * 0.1}s` }}>
+              className="block p-4 rounded-lg border border-border bg-background-surface hover:bg-background-hover hover:border-border-light transition-all duration-150 animate-fade-in group"
+              style={{ animationDelay: `${index * 0.05}s` }}>
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1">
-                  <h4 className={`font-semibold text-sm sm:text-base mb-2 ${darkMode ? 'text-white' : 'text-primary-900'}`}>
+                  <h4 className="font-medium text-sm text-text-primary mb-2 group-hover:text-accent-primary transition-colors">
                     {item.title}
                   </h4>
-                  <div className="flex items-center gap-3 text-xs">
-                    <span className={darkMode ? 'text-primary-400' : 'text-primary-600'}>{item.source}</span>
+                  <div className="flex items-center gap-3 text-xs text-text-tertiary">
+                    <span className="font-medium text-text-secondary">{item.source}</span>
                     <span className="flex items-center gap-1">
                       <Clock className="w-3 h-3" />
-                      <span className={darkMode ? 'text-primary-500' : 'text-primary-500'}>{getTimeAgo(item.publishedAt)}</span>
+                      <span>{getTimeAgo(item.publishedAt)}</span>
                     </span>
                   </div>
                 </div>
-                <ExternalLink className={`w-4 h-4 flex-shrink-0 ${darkMode ? 'text-primary-400' : 'text-primary-600'}`} />
+                <ExternalLink className="w-4 h-4 flex-shrink-0 text-text-tertiary group-hover:text-accent-primary transition-colors" />
               </div>
             </a>
           ))}
         </div>
       ) : (
-        <p className={`text-center py-8 text-sm ${darkMode ? 'text-primary-400' : 'text-primary-600'}`}>
-          {symbol ? 'No news available' : 'Select a stock to see related news'}
-        </p>
+        <div className="text-center py-12">
+          <Newspaper className="w-12 h-12 text-text-tertiary mx-auto mb-3" />
+          <p className="text-text-secondary">
+            {symbol ? 'No news available' : 'Select a stock to see related news'}
+          </p>
+        </div>
       )}
     </div>
   );

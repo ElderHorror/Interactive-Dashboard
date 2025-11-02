@@ -121,86 +121,80 @@ function Dashboard({ symbol, darkMode, range }) {
 
   const statComponents = {
     periodChange: (
-      <div className={`stat-card p-4 rounded-xl card-hover border ${
-        darkMode ? 'bg-primary-800/60 border-primary-700' : 'bg-white border-primary-200'
-      } ${stats?.priceChange >= 0 ? 'shadow-success/20' : 'shadow-error/20'} shadow-lg`}>
+      <div className="stat-card p-4">
         <div className="flex items-center justify-between mb-2">
-          <p className={`text-xs font-medium ${darkMode ? 'text-primary-400' : 'text-primary-600'}`}>Period Change</p>
+          <p className="text-xs font-semibold text-text-secondary uppercase tracking-wider">Period Change</p>
           {stats?.priceChange >= 0 ? 
-            <TrendingUp className="w-4 h-4 text-success" /> : 
-            <TrendingDown className="w-4 h-4 text-error" />
+            <TrendingUp className="w-4 h-4 text-bull" /> : 
+            <TrendingDown className="w-4 h-4 text-bear" />
           }
         </div>
-        <p className={`text-lg sm:text-xl font-bold ${stats?.priceChange >= 0 ? 'text-success' : 'text-error'}`}>
+        <p className={`text-2xl font-bold font-mono tabular-nums ${stats?.priceChange >= 0 ? 'text-bull' : 'text-bear'}`}>
           ${stats?.priceChange.toFixed(2)}
         </p>
-        <p className={`text-xs ${stats?.priceChange >= 0 ? 'text-success/70' : 'text-error/70'}`}>
+        <p className={`text-sm font-medium ${stats?.priceChange >= 0 ? 'text-bull' : 'text-bear'}`}>
           {stats?.percentChange >= 0 ? '+' : ''}{stats?.percentChange.toFixed(2)}%
         </p>
       </div>
     ),
     periodHighLow: (
-      <div className={`stat-card p-2 sm:p-3 rounded-lg card-hover border shadow-md ${
-        darkMode ? 'bg-primary-800/60 border-primary-700' : 'bg-white border-primary-200'
-      }`}>
-        <div className="flex items-center justify-between mb-1">
-          <p className={`text-[10px] sm:text-xs font-medium ${darkMode ? 'text-primary-400' : 'text-primary-600'}`}>High/Low</p>
-          <Activity className="w-3 h-3 sm:w-4 sm:h-4 text-accent-500" />
+      <div className="stat-card p-3">
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-xs font-semibold text-text-secondary uppercase tracking-wider">High/Low</p>
+          <Activity className="w-4 h-4 text-accent-primary" />
         </div>
-        <div className="flex flex-col gap-0.5">
-          <p className={`text-sm sm:text-base font-bold ${darkMode ? 'text-white' : 'text-primary-900'}`}>
-            ${stats?.periodHigh.toFixed(2)}
-          </p>
-          <p className={`text-xs ${darkMode ? 'text-primary-400' : 'text-primary-600'}`}>
-            ${stats?.periodLow.toFixed(2)}
-          </p>
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-text-tertiary">H</span>
+            <p className="text-base font-bold font-mono tabular-nums text-text-primary">
+              ${stats?.periodHigh.toFixed(2)}
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-text-tertiary">L</span>
+            <p className="text-base font-bold font-mono tabular-nums text-text-secondary">
+              ${stats?.periodLow.toFixed(2)}
+            </p>
+          </div>
         </div>
       </div>
     ),
     startingPrice: (
-      <div className={`stat-card p-2 sm:p-3 rounded-lg card-hover border shadow-md ${
-        darkMode ? 'bg-primary-800/60 border-primary-700' : 'bg-white border-primary-200'
-      }`}>
-        <div className="flex items-center justify-between mb-1">
-          <p className={`text-[10px] sm:text-xs font-medium ${darkMode ? 'text-primary-400' : 'text-primary-600'}`}>Open</p>
-          <DollarSign className="w-3 h-3 sm:w-4 sm:h-4 text-accent-500" />
+      <div className="stat-card p-3">
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-xs font-semibold text-text-secondary uppercase tracking-wider">Open</p>
+          <DollarSign className="w-4 h-4 text-accent-primary" />
         </div>
-        <p className={`text-sm sm:text-base font-bold ${darkMode ? 'text-white' : 'text-primary-900'}`}>${stats?.firstPrice.toFixed(2)}</p>
+        <p className="text-base font-bold font-mono tabular-nums text-text-primary">${stats?.firstPrice.toFixed(2)}</p>
       </div>
     ),
     currentPrice: (
-      <div className={`stat-card p-4 rounded-xl card-hover border shadow-xl ${
-        darkMode ? 'bg-primary-800/60 border-accent-600' : 'bg-accent-50 border-accent-200'
-      }`}>
+      <div className="stat-card p-4 border-accent-primary/30">
         <div className="flex items-center justify-between mb-2">
-          <p className={`text-xs font-medium ${darkMode ? 'text-accent-300' : 'text-accent-700'}`}>Current Price</p>
-          <DollarSign className="w-4 h-4 text-accent-500" />
+          <p className="text-xs font-semibold text-accent-primary uppercase tracking-wider">Current Price</p>
+          <DollarSign className="w-4 h-4 text-accent-primary" />
         </div>
-        <p className={`text-lg sm:text-xl font-bold ${darkMode ? 'text-accent-400' : 'text-accent-700'}`}>${stats?.lastPrice.toFixed(2)}</p>
+        <p className="text-2xl font-bold font-mono tabular-nums text-accent-primary">${stats?.lastPrice.toFixed(2)}</p>
       </div>
     ),
     totalVolume: (
-      <div className={`stat-card p-2 sm:p-3 rounded-lg card-hover border shadow-md ${
-        darkMode ? 'bg-primary-800/60 border-primary-700' : 'bg-white border-primary-200'
-      }`}>
-        <div className="flex items-center justify-between mb-1">
-          <p className={`text-[10px] sm:text-xs font-medium ${darkMode ? 'text-primary-400' : 'text-primary-600'}`}>Volume</p>
-          <BarChart2 className="w-3 h-3 sm:w-4 sm:h-4 text-warning" />
+      <div className="stat-card p-3">
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-xs font-semibold text-text-secondary uppercase tracking-wider">Volume</p>
+          <BarChart2 className="w-4 h-4 text-warning" />
         </div>
-        <p className={`text-xs sm:text-sm font-bold ${darkMode ? 'text-white' : 'text-primary-900'}`}>
+        <p className="text-base font-bold font-mono tabular-nums text-text-primary">
           {(stats?.totalVolume / 1000000).toFixed(1)}M
         </p>
       </div>
     ),
     avgVolume: (
-      <div className={`stat-card p-2 sm:p-3 rounded-lg card-hover border shadow-md ${
-        darkMode ? 'bg-primary-800/60 border-primary-700' : 'bg-white border-primary-200'
-      }`}>
-        <div className="flex items-center justify-between mb-1">
-          <p className={`text-[10px] sm:text-xs font-medium ${darkMode ? 'text-primary-400' : 'text-primary-600'}`}>Avg Vol</p>
-          <BarChart2 className="w-3 h-3 sm:w-4 sm:h-4 text-accent-500" />
+      <div className="stat-card p-3">
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-xs font-semibold text-text-secondary uppercase tracking-wider">Avg Vol</p>
+          <BarChart2 className="w-4 h-4 text-accent-secondary" />
         </div>
-        <p className={`text-xs sm:text-sm font-bold ${darkMode ? 'text-white' : 'text-primary-900'}`}>
+        <p className="text-base font-bold font-mono tabular-nums text-text-primary">
           {(stats?.avgVolume / 1000000).toFixed(1)}M
         </p>
       </div>
@@ -208,46 +202,40 @@ function Dashboard({ symbol, darkMode, range }) {
   };
 
   return (
-    <div className="mt-6 sm:mt-8 w-full">
+    <div className="w-full">
       {loading && <SkeletonLoader darkMode={darkMode} type="dashboard" />}
       
       {error && <ErrorDisplay error={error} onRetry={refetch} darkMode={darkMode} />}
 
       {!loading && !error && dashData && stats ? (
-          <div className={`p-4 sm:p-6 rounded-2xl shadow-2xl card-hover animate-fade-in-up w-full border ${
-            darkMode 
-              ? 'bg-primary-800/40 backdrop-blur-xl border-primary-700/50' 
-              : 'bg-white/90 backdrop-blur-xl border-primary-200'
-          }`}>
+          <div className="card-elevated p-6 animate-fade-in-up w-full">
           <div className="flex justify-between items-start mb-6">
             <div>
-              <h2 className={`text-2xl sm:text-4xl font-black flex items-center gap-2 mb-2 ${
-                darkMode ? 'text-white' : 'text-primary-900'
-              }`}>
-                {dashData.symbol}
+              <div className="flex items-center gap-3 mb-2">
+                <h2 className="text-3xl font-bold font-mono text-text-primary">
+                  {dashData.symbol}
+                </h2>
                 <span
-                  className={`px-3 py-1 text-sm font-bold rounded-full smooth-transition ${
+                  className={`px-2.5 py-1 text-sm font-bold rounded font-mono ${
                     stats.percentChange >= 0
-                      ? 'bg-success/20 text-success border border-success/30'
-                      : 'bg-error/20 text-error border border-error/30'
+                      ? 'badge-bull'
+                      : 'badge-bear'
                   }`}
                 >
                   {stats.percentChange >= 0 ? '▲' : '▼'} {stats.percentChange.toFixed(2)}%
                 </span>
-              </h2>
-              <p className={`text-sm ${
-                darkMode ? 'text-primary-400' : 'text-primary-600'
-              }`}>
+              </div>
+              <p className="text-sm text-text-secondary">
                 {getRangeLabel(range)} Period
               </p>
             </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={toggleWatchlist}
-                className={`p-2.5 rounded-xl smooth-transition hover:scale-110 active:scale-95 border ${
+                className={`btn-icon ${
                   isInWatchlist
-                    ? 'bg-accent-500 border-accent-600 text-white shadow-lg'
-                    : darkMode ? 'bg-primary-700/50 border-primary-600 text-primary-300 hover:bg-primary-600/50' : 'bg-white border-primary-300 text-primary-700 hover:bg-primary-50'
+                    ? 'bg-accent-primary text-white'
+                    : ''
                 }`}
                 title={isInWatchlist ? 'Remove from watchlist' : 'Add to watchlist'}
               >
@@ -255,9 +243,7 @@ function Dashboard({ symbol, darkMode, range }) {
               </button>
               <button
                 onClick={() => setShowSettings(!showSettings)}
-                className={`p-2.5 rounded-xl smooth-transition hover:scale-110 active:scale-95 hover:rotate-90 border ${
-                  darkMode ? 'bg-primary-700/50 border-primary-600 text-primary-300 hover:bg-primary-600/50' : 'bg-white border-primary-300 text-primary-700 hover:bg-primary-50'
-                }`}
+                className="btn-icon"
                 title="Settings"
               >
                 <Settings className="w-5 h-5" />
@@ -266,14 +252,14 @@ function Dashboard({ symbol, darkMode, range }) {
           </div>
 
           {showSettings && (
-            <div className={`mb-4 p-4 rounded-lg ${darkMode ? 'bg-gray-700/30' : 'bg-white/10'}`}>
-              <div className="flex justify-between items-center mb-2">
-                <h3 className={`text-lg font-medium ${darkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+            <div className="mb-4 p-4 rounded-lg bg-background-surface border border-border">
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="text-base font-semibold text-text-primary">
                   Statistics Settings
                 </h3>
                 <button
                   onClick={toggleAllStats}
-                  className={`text-sm ${darkMode ? 'text-purple-400 hover:text-purple-300' : 'text-purple-600 hover:text-purple-700'}`}
+                  className="text-sm text-accent-primary hover:text-accent-primary-dark transition-colors"
                 >
                   {Object.values(visibleStats).every(v => v) ? 'Hide All' : 'Show All'}
                 </button>
@@ -282,17 +268,15 @@ function Dashboard({ symbol, darkMode, range }) {
                 {Object.entries(visibleStats).map(([key, value]) => (
                   <label
                     key={key}
-                    className={`flex items-center gap-2 p-2 rounded cursor-pointer ${
-                      darkMode ? 'hover:bg-gray-600/30' : 'hover:bg-gray-100'
-                    }`}
+                    className="flex items-center gap-2 p-2 rounded cursor-pointer hover:bg-background-hover transition-colors"
                   >
                     <input
                       type="checkbox"
                       checked={value}
                       onChange={() => toggleStat(key)}
-                      className="rounded text-purple-500 focus:ring-purple-500"
+                      className="rounded text-accent-primary focus:ring-accent-primary"
                     />
-                    <span className={darkMode ? 'text-gray-300' : 'text-gray-700'}>
+                    <span className="text-sm text-text-secondary">
                       {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
                     </span>
                   </label>
@@ -301,22 +285,18 @@ function Dashboard({ symbol, darkMode, range }) {
             </div>
           )}
 
-          {/* Featured Stats - Larger on mobile */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4">
-            {visibleStats.periodChange && (
-              <div className="animate-fade-in-up">
-                {statComponents.periodChange}
-              </div>
-            )}
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {visibleStats.currentPrice && (
-              <div className="animate-fade-in-up" style={{ animationDelay: '0.05s' }}>
+              <div className="animate-fade-in-up">
                 {statComponents.currentPrice}
               </div>
             )}
-          </div>
-
-          {/* Secondary Stats - Compact grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+            {visibleStats.periodChange && (
+              <div className="animate-fade-in-up" style={{ animationDelay: '0.05s' }}>
+                {statComponents.periodChange}
+              </div>
+            )}
             {visibleStats.periodHighLow && (
               <div className="animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
                 {statComponents.periodHighLow}
@@ -339,11 +319,7 @@ function Dashboard({ symbol, darkMode, range }) {
             )}
           </div>
         </div>
-      ) : (
-        <p className={darkMode ? 'text-center text-gray-400 mt-4' : 'text-center text-white/70 mt-4'}>
-          Enter a stock symbol to see the data!
-        </p>
-      )}
+      ) : null}
     </div>
   );
 }

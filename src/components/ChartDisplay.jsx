@@ -1,12 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { Download, LineChart } from 'lucide-react';
 import Chart from 'chart.js/auto';
 import zoomPlugin from 'chartjs-plugin-zoom';
-import { LineChart, CandlestickChart, TrendingUp, Download } from 'lucide-react';
 
-// Register the zoom plugin
 Chart.register(zoomPlugin);
 
-function ChartDisplay({ dashData, compareData, darkMode, range }) {
+function ChartDisplay({ dashData, compareData, darkMode, range, onRangeChange }) {
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
   const rsiChartRef = useRef(null);
@@ -135,7 +134,6 @@ function ChartDisplay({ dashData, compareData, darkMode, range }) {
 
     // Destroy existing chart if it exists
     if (chartInstance.current) {
-      chartInstance.current.destroy();
     }
 
     const closePrices = dashData.trend.map((t) => t.close);
@@ -144,23 +142,21 @@ function ChartDisplay({ dashData, compareData, darkMode, range }) {
       {
         label: dashData.symbol,
         data: closePrices,
-        borderColor: darkMode ? '#2196f3' : '#1976d2',
+        borderColor: '#00C9FF',
         backgroundColor: () => {
           const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-          gradient.addColorStop(0, darkMode ? 'rgba(33, 150, 243, 0.3)' : 'rgba(33, 150, 243, 0.15)');
-          gradient.addColorStop(1, darkMode ? 'rgba(33, 150, 243, 0)' : 'rgba(33, 150, 243, 0)');
+          gradient.addColorStop(0, 'rgba(0, 201, 255, 0.2)');
+          gradient.addColorStop(1, 'rgba(0, 201, 255, 0)');
           return gradient;
         },
         fill: true,
         tension: 0.4,
         pointRadius: 0,
-        pointHoverRadius: 4,
         pointHoverBackgroundColor: darkMode ? '#2196f3' : '#1976d2',
         borderWidth: 3,
         order: 1,
       }
     ];
-
     // Add Bollinger Bands
     if (showIndicators.bb) {
       const bb = calculateBollingerBands(closePrices, 20, 2);
@@ -266,23 +262,38 @@ function ChartDisplay({ dashData, compareData, darkMode, range }) {
       legend: {
             display: true,
             position: 'top',
+            align: 'start',
         labels: {
-              color: darkMode ? '#E5E7EB' : '#1F2937',
+              color: '#E0E3EB',
               font: {
                 size: 12,
+                family: 'Inter, sans-serif',
+                weight: '500',
               },
+              padding: 12,
+              usePointStyle: true,
+              pointStyle: 'circle',
             },
       },
       tooltip: {
             mode: 'index',
             intersect: false,
-            backgroundColor: darkMode ? 'rgba(31, 41, 55, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-            titleColor: darkMode ? '#E5E7EB' : '#1F2937',
-            bodyColor: darkMode ? '#E5E7EB' : '#1F2937',
-            borderColor: darkMode ? '#4B5563' : '#E5E7EB',
+            backgroundColor: 'rgba(30, 34, 45, 0.95)',
+            titleColor: '#E0E3EB',
+            bodyColor: '#E0E3EB',
+            borderColor: '#2A2E39',
             borderWidth: 1,
             padding: 12,
             displayColors: true,
+            titleFont: {
+              size: 13,
+              family: 'Inter, sans-serif',
+              weight: '600',
+            },
+            bodyFont: {
+              size: 12,
+              family: 'JetBrains Mono, monospace',
+            },
             callbacks: {
               label: function (context) {
                 return `${context.dataset.label}: $${context.parsed.y.toFixed(2)}`;
@@ -310,26 +321,46 @@ function ChartDisplay({ dashData, compareData, darkMode, range }) {
         scales: {
           x: {
             grid: {
-              display: false,
+              display: true,
+              color: '#2A2E39',
+              drawTicks: false,
             },
             ticks: {
-              color: darkMode ? '#9CA3AF' : '#6B7280',
+              color: '#9598A1',
               maxRotation: 0,
-              maxTicksLimit: 6,
+              maxTicksLimit: 8,
+              padding: 8,
+              font: {
+                size: 11,
+                family: 'JetBrains Mono, monospace',
+              },
+            },
+            border: {
+              display: false,
             },
           },
           y: {
+            position: 'right',
             grid: {
-              color: darkMode ? 'rgba(75, 85, 99, 0.2)' : 'rgba(229, 231, 235, 0.2)',
-          },
+              color: '#2A2E39',
+              drawTicks: false,
+            },
             ticks: {
-              color: darkMode ? '#9CA3AF' : '#6B7280',
+              color: '#9598A1',
+              padding: 8,
+              font: {
+                size: 11,
+                family: 'JetBrains Mono, monospace',
+              },
               callback: function (value) {
-                return '$' + value;
+                return '$' + value.toFixed(2);
+              },
             },
+            border: {
+              display: false,
             },
           },
-          },
+        },
         interaction: {
           mode: 'nearest',
           axis: 'x',
@@ -452,110 +483,115 @@ function ChartDisplay({ dashData, compareData, darkMode, range }) {
     };
   }, [dashData, darkMode, showIndicators.rsi]);
 
+  const timeRanges = [
+    { label: '1D', value: '1d' },
+    { label: '7D', value: '7d' },
+    { label: '1M', value: '1m' },
+    { label: '4M', value: '4m' },
+    { label: '1Y', value: '1y' },
+  ];
+
   return (
-    <div className={`w-full mt-4 sm:mt-6 p-3 sm:p-6 rounded-2xl border shadow-xl ${
-      darkMode 
-        ? 'bg-primary-800/40 backdrop-blur-xl border-primary-700/50' 
-        : 'bg-white/90 backdrop-blur-xl border-primary-200'
-    }`}>
-      <div className="flex flex-col gap-3 mb-4">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-          <h3 className={`text-base sm:text-lg font-bold ${
-            darkMode ? 'text-white' : 'text-primary-900'
-          }`}>
-            Price Chart
-          </h3>
-          <button
-            onClick={exportChart}
-            className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium smooth-transition border flex items-center gap-2 ${
-              darkMode
-                ? 'bg-primary-700/50 border-primary-600 text-primary-200 hover:bg-primary-600/50'
-                : 'bg-white border-primary-300 text-primary-800 hover:bg-primary-50'
-            }`}
-          >
-            <Download className="w-4 h-4" />
-            Export
-          </button>
+    <div className="card-elevated p-6 w-full">
+      <div className="flex flex-col gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <div className="flex items-center gap-3">
+            <LineChart className="w-5 h-5 text-accent-primary" />
+            <h3 className="text-lg font-semibold text-text-primary">
+              Price Chart
+            </h3>
+          </div>
+          <div className="flex items-center gap-2">
+            {/* Time Range Selector */}
+            <div className="flex gap-1 bg-background-surface rounded-lg p-1 border border-border">
+              {timeRanges.map((r) => (
+                <button
+                  key={r.value}
+                  onClick={() => onRangeChange && onRangeChange(r.value)}
+                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-150 ${
+                    range === r.value
+                      ? 'bg-accent-primary text-white'
+                      : 'text-text-secondary hover:text-text-primary hover:bg-background-hover'
+                  }`}
+                >
+                  {r.label}
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={exportChart}
+              className="btn-secondary flex items-center gap-2 text-sm"
+            >
+              <Download className="w-4 h-4" />
+              <span className="hidden sm:inline">Export</span>
+            </button>
+          </div>
         </div>
 
         {/* Chart Controls */}
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setShowMA({ ...showMA, ma20: !showMA.ma20 })}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium smooth-transition border ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 border ${
               showMA.ma20
-                ? darkMode
-                  ? 'bg-warning/20 border-warning text-warning'
-                  : 'bg-warning/10 border-warning/50 text-warning'
-                : darkMode
-                ? 'bg-primary-700/30 border-primary-600 text-primary-300 hover:bg-primary-600/50'
-                : 'bg-white border-primary-300 text-primary-700 hover:bg-primary-50'
+                ? 'bg-warning/20 border-warning text-warning'
+                : 'bg-background-elevated border-border text-text-secondary hover:bg-background-hover hover:text-text-primary'
             }`}
           >
             MA(20)
           </button>
           <button
             onClick={() => setShowMA({ ...showMA, ma50: !showMA.ma50 })}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium smooth-transition border ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 border ${
               showMA.ma50
-                ? darkMode
-                  ? 'bg-success/20 border-success text-success'
-                  : 'bg-success/10 border-success/50 text-success'
-                : darkMode
-                ? 'bg-primary-700/30 border-primary-600 text-primary-300 hover:bg-primary-600/50'
-                : 'bg-white border-primary-300 text-primary-700 hover:bg-primary-50'
+                ? 'bg-bull/20 border-bull text-bull'
+                : 'bg-background-elevated border-border text-text-secondary hover:bg-background-hover hover:text-text-primary'
             }`}
           >
             MA(50)
           </button>
           <button
             onClick={() => setShowIndicators({ ...showIndicators, bb: !showIndicators.bb })}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium smooth-transition border ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 border ${
               showIndicators.bb
-                ? darkMode
-                  ? 'bg-purple-500/20 border-purple-500 text-purple-400'
-                  : 'bg-purple-500/10 border-purple-500/50 text-purple-600'
-                : darkMode
-                ? 'bg-primary-700/30 border-primary-600 text-primary-300 hover:bg-primary-600/50'
-                : 'bg-white border-primary-300 text-primary-700 hover:bg-primary-50'
+                ? 'bg-info/20 border-info text-info'
+                : 'bg-background-elevated border-border text-text-secondary hover:bg-background-hover hover:text-text-primary'
             }`}
           >
             Bollinger Bands
           </button>
           <button
             onClick={() => setShowIndicators({ ...showIndicators, rsi: !showIndicators.rsi })}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium smooth-transition border ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 border ${
               showIndicators.rsi
-                ? darkMode
-                  ? 'bg-accent-500/20 border-accent-500 text-accent-400'
-                  : 'bg-accent-500/10 border-accent-500/50 text-accent-600'
-                : darkMode
-                ? 'bg-primary-700/30 border-primary-600 text-primary-300 hover:bg-primary-600/50'
-                : 'bg-white border-primary-300 text-primary-700 hover:bg-primary-50'
+                ? 'bg-accent-primary/20 border-accent-primary text-accent-primary'
+                : 'bg-background-elevated border-border text-text-secondary hover:bg-background-hover hover:text-text-primary'
             }`}
           >
             RSI
           </button>
-          <div className={`px-3 py-1.5 text-xs ${
-            darkMode ? 'text-primary-400' : 'text-primary-600'
-          }`}>
-            💡 Ctrl+Scroll to zoom
+          <div className="px-3 py-1.5 text-xs text-text-tertiary flex items-center gap-1">
+            <span>💡</span>
+            <span className="hidden sm:inline">Ctrl+Scroll to zoom</span>
           </div>
         </div>
       </div>
-      <div className="relative" style={{ height: 'clamp(250px, 50vh, 400px)' }}>
+      
+      {/* Main Chart */}
+      <div className="relative bg-background-surface rounded-lg p-4 border border-border" style={{ height: 'clamp(300px, 50vh, 500px)' }}>
         <canvas ref={chartRef} />
       </div>
 
       {/* RSI Chart */}
       {showIndicators.rsi && dashData?.trend && (
-        <div className="mt-4">
-          <h4 className={`text-sm font-bold mb-2 ${
-            darkMode ? 'text-white' : 'text-primary-900'
-          }`}>
-            RSI (14)
-          </h4>
-          <div className="relative" style={{ height: '150px' }}>
+        <div className="mt-6">
+          <div className="flex items-center gap-2 mb-3">
+            <h4 className="text-sm font-semibold text-text-primary">
+              RSI (14)
+            </h4>
+            <span className="text-xs text-text-tertiary">Relative Strength Index</span>
+          </div>
+          <div className="relative bg-background-surface rounded-lg p-4 border border-border" style={{ height: '150px' }}>
             <canvas ref={rsiChartRef} />
           </div>
         </div>

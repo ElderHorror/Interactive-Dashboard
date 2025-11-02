@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
+import { Star, TrendingUp, TrendingDown, X, BarChart2 } from 'lucide-react';
 
 function Watchlist({ darkMode, onSelectSymbol, isComparing }) {
   const [watchlist, setWatchlist] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [sortBy, setSortBy] = useState('symbol'); // symbol, change, volume
+  const [sortOrder, setSortOrder] = useState('asc'); // asc, desc
 
   // Load initial watchlist and set up storage event listener
   useEffect(() => {
@@ -63,85 +66,88 @@ function Watchlist({ darkMode, onSelectSymbol, isComparing }) {
   };
 
   return (
-    <div className="relative">
-      <button
-        onClick={toggleWatchlist}
-        className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
-          darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'
-        } text-gray-900 transition-colors`}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className={`h-5 w-5 ${darkMode ? 'text-white' : 'text-gray-900'}`}
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fillRule="evenodd"
-            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-            clipRule="evenodd"
-          />
-        </svg>
-        <span className="hidden sm:inline text-gray-900 dark:text-white">Watchlist</span>
-        <span className="text-xs bg-purple-500 text-white px-2 py-0.5 rounded-full">
-          {watchlist.length}
-        </span>
-      </button>
+    <div className="card-elevated p-6 w-full">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <Star className="w-5 h-5 text-warning fill-warning" />
+          <h2 className="text-xl font-semibold text-text-primary">Watchlist</h2>
+          <span className="badge badge-neutral">{watchlist.length}</span>
+        </div>
+      </div>
 
-      {isOpen && (
-        <div
-          className={`absolute right-0 mt-2 w-64 rounded-lg shadow-lg ${
-            darkMode ? 'bg-gray-800' : 'bg-white'
-          } border ${
-            darkMode ? 'border-gray-700' : 'border-gray-200'
-          } z-10`}
-        >
-          <div className="p-2">
-            {watchlist.length === 0 ? (
-              <p className={`text-center py-2 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                No stocks in watchlist
-              </p>
-            ) : (
-              <div className="space-y-1">
-                {watchlist.map((symbol) => (
-                  <div
-                    key={symbol}
-                    className={`flex items-center justify-between p-2 rounded-lg ${
-                      darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                    }`}
-                  >
-                    <button
-                      onClick={() => handleSymbolClick(symbol)}
-                      className={`flex-1 text-left ${
-                        darkMode ? 'text-gray-200' : 'text-gray-800'
-                      }`}
-                    >
-                      {symbol}
-                    </button>
-                    <button
-                      onClick={() => removeFromWatchlist(symbol)}
-                      className={`p-1 rounded-full ${
-                        darkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'
-                      }`}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
+      {watchlist.length === 0 ? (
+        <div className="text-center py-12">
+          <Star className="w-12 h-12 text-text-tertiary mx-auto mb-3" />
+          <p className="text-text-secondary mb-2">Your watchlist is empty</p>
+          <p className="text-sm text-text-tertiary">Add stocks to track them here</p>
+        </div>
+      ) : (
+        <div className="overflow-x-auto custom-scrollbar">
+          <table className="table">
+            <thead>
+              <tr>
+                <th style={{ width: '15%' }}>Symbol</th>
+                <th className="text-right" style={{ width: '15%' }}>Price</th>
+                <th className="text-right" style={{ width: '15%' }}>Change</th>
+                <th className="text-right" style={{ width: '20%' }}>Change %</th>
+                <th className="text-right" style={{ width: '15%' }}>Volume</th>
+                <th className="text-right" style={{ width: '10%' }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {watchlist.map((symbol) => {
+                // Mock data - in real app, fetch from API
+                const mockPrice = (Math.random() * 500 + 50).toFixed(2);
+                const mockChange = (Math.random() * 20 - 10).toFixed(2);
+                const mockChangePercent = (Math.random() * 10 - 5).toFixed(2);
+                const mockVolume = (Math.random() * 100).toFixed(1);
+                const isPositive = parseFloat(mockChange) >= 0;
+
+                return (
+                  <tr key={symbol} className="cursor-pointer" onClick={() => handleSymbolClick(symbol)}>
+                    <td style={{ width: '15%' }}>
+                      <span className="font-mono font-semibold text-text-primary">{symbol}</span>
+                    </td>
+                    <td className="text-right" style={{ width: '15%' }}>
+                      <span className="font-mono tabular-nums text-text-primary">${mockPrice}</span>
+                    </td>
+                    <td className="text-right" style={{ width: '15%' }}>
+                      <span className={`font-mono tabular-nums ${isPositive ? 'text-bull' : 'text-bear'}`}>
+                        {isPositive ? '+' : ''}{mockChange}
+                      </span>
+                    </td>
+                    <td className="text-right" style={{ width: '20%' }}>
+                      <div className="flex items-center justify-end gap-1">
+                        {isPositive ? (
+                          <TrendingUp className="w-4 h-4 text-bull" />
+                        ) : (
+                          <TrendingDown className="w-4 h-4 text-bear" />
+                        )}
+                        <span className={`font-mono tabular-nums font-medium ${isPositive ? 'text-bull' : 'text-bear'}`}>
+                          {isPositive ? '+' : ''}{mockChangePercent}%
+                        </span>
+                      </div>
+                    </td>
+                    <td className="text-right" style={{ width: '15%' }}>
+                      <span className="font-mono tabular-nums text-text-secondary">{mockVolume}M</span>
+                    </td>
+                    <td className="text-right" style={{ width: '10%' }}>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeFromWatchlist(symbol);
+                        }}
+                        className="btn-icon"
+                        title="Remove from watchlist"
                       >
-                        <path
-                          fillRule="evenodd"
-                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+                        <X className="w-4 h-4" />
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       )}
     </div>
